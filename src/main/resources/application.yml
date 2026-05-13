@@ -1,6 +1,13 @@
 spring:
   application:
     name: saas-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/saas_db}
+    username: ${SPRING_DATASOURCE_USERNAME:saas_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:secure_password}
+  jpa:
+    hibernate:
+      ddl-auto: none
 
 server:
   port: 8080
