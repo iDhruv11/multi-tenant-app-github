@@ -1,6 +1,6 @@
 package com.example.saas.service;
 
-import com.example.saas.dto.AuthResponse;
+import com.example.saas.dto.Dtos.AuthResponse;
 import com.example.saas.model.Tenant;
 import com.example.saas.model.User;
 import com.example.saas.repository.TenantRepository;
