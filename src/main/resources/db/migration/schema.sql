@@ -65,7 +65,8 @@ CREATE TABLE project_members (
     user_id UUID NOT NULL REFERENCES users(id),
     tenant_id UUID NOT NULL REFERENCES tenants(id),
     role project_member_role NOT NULL,
-    joined_at TIMESTAMP NOT NULL DEFAULT NOW()
+    joined_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_project_members_project_user UNIQUE (project_id, user_id)
 );
 
 CREATE TABLE activity_logs (
@@ -83,7 +84,7 @@ CREATE TABLE sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id),
     tenant_id UUID NOT NULL REFERENCES tenants(id),
-    refresh_token VARCHAR(512) NOT NULL, 
+    refresh_token VARCHAR(512) NOT NULL UNIQUE,
     ip_address VARCHAR(45),
     user_agent VARCHAR(500),
     expires_at TIMESTAMP NOT NULL,
@@ -93,6 +94,8 @@ CREATE TABLE sessions (
 CREATE INDEX idx_users_tenant_email ON users (tenant_id, email);
 CREATE INDEX idx_projects_tenant_id ON projects (tenant_id, id);
 CREATE INDEX idx_tasks_tenant_project_status ON tasks (tenant_id, project_id, status);
+CREATE INDEX idx_project_members_project_user ON project_members (project_id, user_id);
+CREATE INDEX idx_activity_logs_tenant_created ON activity_logs (tenant_id, created_at DESC);
 
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
