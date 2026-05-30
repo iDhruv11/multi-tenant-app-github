@@ -3,7 +3,6 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TYPE tenant_status AS ENUM ('active', 'suspended', 'deleted');
 CREATE TYPE user_role AS ENUM ('admin', 'manager', 'member');
 CREATE TYPE user_status AS ENUM ('active', 'disabled');
-
 CREATE TYPE project_visibility AS ENUM ('private', 'internal');
 CREATE TYPE task_status AS ENUM ('todo', 'in_progress', 'done');
 CREATE TYPE task_priority AS ENUM ('low', 'medium', 'high');
@@ -105,17 +104,17 @@ ALTER TABLE activity_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON users
-    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+    USING (tenant_id = current_setting('app.tenant_id', true)::uuid);
 CREATE POLICY tenant_isolation ON projects
-    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+    USING (tenant_id = current_setting('app.tenant_id', true)::uuid);
 CREATE POLICY tenant_isolation ON tasks
-    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+    USING (tenant_id = current_setting('app.tenant_id', true)::uuid);
 CREATE POLICY tenant_isolation ON project_members
-    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+    USING (tenant_id = current_setting('app.tenant_id', true)::uuid);
 CREATE POLICY tenant_isolation ON activity_logs
-    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+    USING (tenant_id = current_setting('app.tenant_id', true)::uuid);
 CREATE POLICY tenant_isolation ON sessions
-    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+    USING (tenant_id = current_setting('app.tenant_id', true)::uuid);
 
 ALTER TABLE users FORCE ROW LEVEL SECURITY;
 ALTER TABLE projects FORCE ROW LEVEL SECURITY;

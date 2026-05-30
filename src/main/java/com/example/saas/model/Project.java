@@ -20,7 +20,10 @@ public class Project {
   @Column(columnDefinition = "text")
   private String description;
 
-  private String visibility = "PRIVATE";
+  @Convert(converter = VisibilityConverter.class)
+  @Column(columnDefinition = "project_visibility")
+  @org.hibernate.annotations.ColumnTransformer(write = "?::project_visibility")
+  private Enums.ProjectVisibility visibility = Enums.ProjectVisibility.PRIVATE;
 
   @Column(name = "owner_id")
   private UUID ownerId;
@@ -47,6 +50,11 @@ public class Project {
     updatedAt = now;
   }
 
+  @PreUpdate
+  void preUpdate() {
+    updatedAt = Instant.now();
+  }
+
   public UUID getId() {
     return id;
   }
@@ -71,11 +79,11 @@ public class Project {
     this.description = description;
   }
 
-  public String getVisibility() {
+  public Enums.ProjectVisibility getVisibility() {
     return visibility;
   }
 
-  public void setVisibility(String visibility) {
+  public void setVisibility(Enums.ProjectVisibility visibility) {
     this.visibility = visibility;
   }
 
@@ -101,5 +109,18 @@ public class Project {
 
   public Instant getUpdatedAt() {
     return updatedAt;
+  }
+
+  @Converter
+  static class VisibilityConverter implements AttributeConverter<Enums.ProjectVisibility, String> {
+    @Override
+    public String convertToDatabaseColumn(Enums.ProjectVisibility attribute) {
+      return attribute == null ? null : attribute.getDbValue();
+    }
+
+    @Override
+    public Enums.ProjectVisibility convertToEntityAttribute(String dbData) {
+      return dbData == null ? null : Enums.ProjectVisibility.fromDb(dbData);
+    }
   }
 }
