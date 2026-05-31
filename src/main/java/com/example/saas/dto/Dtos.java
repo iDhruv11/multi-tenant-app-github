@@ -32,4 +32,13 @@ public final class Dtos {
       UUID sessionId,
       long accessTokenExpiresInSeconds) {
   }
+
+  public record DashboardResponse(
+      long projectCount,
+      long userCount,
+      long openTaskCount,
+      long completedTaskCount,
+      List<AuditLogResponse> recentActivity,
+      List<TaskResponse> myTasks) {
+  }
 }
