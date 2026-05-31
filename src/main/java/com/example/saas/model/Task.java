@@ -4,6 +4,8 @@ import com.example.saas.util.TenantCtx;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "tasks")
@@ -23,9 +25,15 @@ public class Task {
   @Column(columnDefinition = "text")
   private String description;
 
-  private String status = "todo";
+  @Enumerated(EnumType.STRING)
+  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+  @Column(columnDefinition = "task_status")
+  private Enums.TaskStatus status = Enums.TaskStatus.todo;
 
-  private String priority = "medium";
+  @Enumerated(EnumType.STRING)
+  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+  @Column(columnDefinition = "task_priority")
+  private Enums.TaskPriority priority = Enums.TaskPriority.medium;
 
   @Column(name = "assigned_to_id")
   private UUID assignedToId;
@@ -50,6 +58,11 @@ public class Task {
     Instant now = Instant.now();
     createdAt = now;
     updatedAt = now;
+  }
+
+  @PreUpdate
+  void preUpdate() {
+    updatedAt = Instant.now();
   }
 
   public UUID getId() {
@@ -80,19 +93,19 @@ public class Task {
     this.description = description;
   }
 
-  public String getStatus() {
+  public Enums.TaskStatus getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Enums.TaskStatus status) {
     this.status = status;
   }
 
-  public String getPriority() {
+  public Enums.TaskPriority getPriority() {
     return priority;
   }
 
-  public void setPriority(String priority) {
+  public void setPriority(Enums.TaskPriority priority) {
     this.priority = priority;
   }
 
@@ -114,9 +127,5 @@ public class Task {
 
   public Instant getCreatedAt() {
     return createdAt;
-  }
-
-  public Instant getUpdatedAt() {
-    return updatedAt;
   }
 }

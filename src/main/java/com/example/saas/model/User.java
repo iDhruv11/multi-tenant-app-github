@@ -4,6 +4,8 @@ import com.example.saas.util.TenantCtx;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "users")
@@ -25,6 +27,16 @@ public class User {
 
   @Column(name = "last_name")
   private String lastName;
+
+  @Enumerated(EnumType.STRING)
+  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+  @Column(columnDefinition = "user_role")
+  private Enums.UserRole role;
+
+  @Enumerated(EnumType.STRING)
+  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+  @Column(columnDefinition = "user_status")
+  private Enums.UserStatus status = Enums.UserStatus.active;
 
   @Column(name = "created_at")
   private Instant createdAt;
@@ -92,6 +104,22 @@ public class User {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public Enums.UserRole getRole() {
+    return role;
+  }
+
+  public void setRole(Enums.UserRole role) {
+    this.role = role;
+  }
+
+  public Enums.UserStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(Enums.UserStatus status) {
+    this.status = status;
   }
 
   public Instant getCreatedAt() {

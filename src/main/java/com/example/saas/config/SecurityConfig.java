@@ -38,7 +38,7 @@ public class SecurityConfig {
             .authenticated()
             .anyRequest()
             .permitAll())
-        .exceptionHandling(ex -> ex.authenticationEntryPoint((req, res, e) -> res.setStatus(401)));
+        .exceptionHandling(ex -> ex.authenticationEntryPoint((req, res, e) -> res.setStatus(401)))
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();

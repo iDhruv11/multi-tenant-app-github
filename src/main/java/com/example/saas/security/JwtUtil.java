@@ -1,5 +1,6 @@
 package com.example.saas.security;
 
+import com.example.saas.model.Enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -15,19 +16,22 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
   private final SecretKey key;
-  private final long accessMinutes = 15;
+  private final long accessMinutes;
 
-  public JwtUtil(@Value("${app.jwt.secret}") String secret) {
+  public JwtUtil(
+      @Value("${app.jwt.secret}") String secret,
+      @Value("${app.jwt.access-token-expiration-minutes}") int accessMinutes) {
     this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    this.accessMinutes = accessMinutes;
   }
 
-  public String createAccessToken(UUID userId, UUID tenantId, String email, String role) {
+  public String createAccessToken(UUID userId, UUID tenantId, String email, UserRole role) {
     Instant now = Instant.now();
     return Jwts.builder()
         .subject(userId.toString())
         .claim("tenant_id", tenantId.toString())
         .claim("email", email)
-        .claim("role", role)
+        .claim("role", role.name())
         .issuedAt(Date.from(now))
         .expiration(Date.from(now.plusSeconds(accessMinutes * 60)))
         .signWith(key)
