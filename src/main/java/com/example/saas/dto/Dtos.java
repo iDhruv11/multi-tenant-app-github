@@ -189,4 +189,7 @@ public final class Dtos {
   public record SessionResponse(UUID id, String device, String browser, Instant lastActive, boolean current) {
   }
 
+  public record UserRemovalPreview(List<ProjectSummary> projectsToDelete, boolean blocked, String message) {
+  }
+
 }
